@@ -3,7 +3,10 @@ import fs from 'fs/promises';
 import path from 'path';
 
 const fetchAndCacheData = cache(async (URL: string): Promise<DataPoint[]> => {
-    const cacheFile = path.join(process.cwd(), '.cache', 'owid-data.json');
+    // Use /tmp on Vercel (serverless), .cache locally
+    const cacheDir = process.env.VERCEL ? '/tmp' : path.join(process.cwd(), '.cache');
+    const cacheFile = path.join(cacheDir, 'owid-data.json');
+    
     try {
         const cached = await fs.readFile(cacheFile, 'utf-8');
         const { data, timestamp } = JSON.parse(cached);
