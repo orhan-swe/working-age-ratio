@@ -10,6 +10,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Global Demographic Support Ratios - All Countries",
     description: "Compare working-age to elderly ratios across 100+ countries from 1950-2100",
+    images: ['/opengraph-image'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Global Working-Age to Elderly Ratio (1950-2100)",
+    description: "Compare demographic support ratios across 100+ countries and regions",
+    images: ['/opengraph-image'],
   },
 };
 

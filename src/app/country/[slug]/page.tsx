@@ -16,6 +16,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     openGraph: {
       title: `Support Ratio in ${entity}`,
       description: `Working-age : Elderly for ${entity}, 1950–2100.`,
+      images: [`/country/${slug}/opengraph-image`],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `Working-age to Elderly Ratio – ${entity}`,
+      description: `Historical and projected support ratio for ${entity}, 1950–2100`,
+      images: [`/country/${slug}/opengraph-image`],
     },
   };
 }
