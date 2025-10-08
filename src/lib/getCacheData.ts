@@ -11,7 +11,6 @@ const fetchAndCacheData = cache(async (URL: string): Promise<DataPoint[]> => {
         const cached = await fs.readFile(cacheFile, 'utf-8');
         const { data, timestamp } = JSON.parse(cached);
         if (Date.now() - timestamp < 86400000) { // 24h
-            console.log('Using cached data');
             return data;
         }
     } catch {}
@@ -23,7 +22,6 @@ const fetchAndCacheData = cache(async (URL: string): Promise<DataPoint[]> => {
     await fs.mkdir(path.dirname(cacheFile), { recursive: true });
     await fs.writeFile(cacheFile, JSON.stringify({ data, timestamp: Date.now() }));
 
-    console.log('Fetched fresh data');
     return data;
 });
 

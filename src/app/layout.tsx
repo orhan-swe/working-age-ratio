@@ -13,6 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://working-age-ratio.vercel.app'),
   title: "Global Working-Age to Elderly Ratio (1950-2100) | Demographic Data",
   description: "Compare demographic support ratios across 100+ countries. Interactive charts showing working-age population (15-64) per elderly person (65+) from 1950-2100. UN World Population Prospects 2024 data.",
   keywords: ["demographic data", "population aging", "support ratio", "dependency ratio", "elderly population", "working age population", "UN population prospects"],

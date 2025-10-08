@@ -28,7 +28,7 @@ export default async function Home() {
     "@type": "Dataset",
     "name": "Global Working-Age to Elderly Ratio (1950-2100)",
     "description": "Demographic support ratios across 100+ countries showing working-age population (15-64) per elderly person (65+)",
-    "url": process.env.NEXT_PUBLIC_BASE_URL || "https://yourdomain.com",
+    "url": "https://working-age-ratio.vercel.app",
     "keywords": "demographic data, population aging, support ratio, dependency ratio, elderly population",
     "creator": {
       "@type": "Organization",
@@ -42,7 +42,7 @@ export default async function Home() {
     "distribution": {
       "@type": "DataDownload",
       "encodingFormat": "text/html",
-      "contentUrl": process.env.NEXT_PUBLIC_BASE_URL || "https://yourdomain.com"
+      "contentUrl": "https://working-age-ratio.vercel.app"
     }
   };
 
