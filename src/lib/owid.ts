@@ -1,7 +1,11 @@
 import { getCachedData } from "./getCacheData";
+import { SLUG_TO_ENTITY, entityToSlug } from "./utils";
 
 // app/lib/owid.ts
 export const revalidate = 86400; // 24h
+
+// Re-export for convenience
+export { entityToSlug } from "./utils";
 
 const OWID_CSV =
   "https://ourworldindata.org/grapher/population-young-working-elderly-with-projections.csv";
@@ -18,16 +22,6 @@ export type CountrySeries = {
   latestEstimate?: RatioPoint;  // most recent estimate point (if available)
 };
 
-// Minimal slug → OWID Entity map (extend as you add countries/regions)
-const SLUG_TO_ENTITY: Record<string, string> = {
-  "south-korea": "South Korea",
-  sweden: "Sweden",
-  japan: "Japan",
-  "united-states": "United States",
-  "united-kingdom": "United Kingdom",
-  europe: "Europe (UN)",
-};
-
 // Cache for dynamic slug mappings built from actual data
 let DYNAMIC_SLUG_MAP: Record<string, string> | null = null;
 
@@ -38,6 +32,7 @@ async function buildSlugMapping(): Promise<Record<string, string>> {
   if (DYNAMIC_SLUG_MAP) return DYNAMIC_SLUG_MAP;
   
   const allData = await getCachedData(OWID_CSV);
+  console.log(`Building slug mapping from ${allData.length} data rows`);
   const entities = [...new Set(allData.map(r => r.entity))];
   
   DYNAMIC_SLUG_MAP = {};
@@ -127,16 +122,4 @@ export async function getAllCountries(): Promise<CountrySeries[]> {
       const bRatio = b.latestEstimate?.ratio ?? 0;
       return aRatio - bRatio; // ascending - countries with lowest ratio (most critical) first
     });
-}
-
-/**
- * Convert entity name to URL slug
- */
-export function entityToSlug(entity: string): string {
-  return entity
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[()]/g, '')
-    .replace(/--+/g, '-')
-    .replace(/^-|-$/g, '');
 }

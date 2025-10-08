@@ -10,15 +10,23 @@ type Props = {
   slug: string;
   data: RatioPoint[];
   latestEstimate?: RatioPoint;
+  index?: number; // Add index for staggered animation
 };
 
-export default function CompactRatioChart({ entity, slug, data, latestEstimate }: Props) {
+export default function CompactRatioChart({ entity, slug, data, latestEstimate, index = 0 }: Props) {
   const [isMounted, setIsMounted] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
-  }, []);
+    // Staggered appearance: each chart appears with a delay based on its index
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, index * 50); // 25ms delay per chart (100 charts = 2.5 seconds total)
+
+    return () => clearTimeout(timer);
+  }, [index]);
 
   const firstProjectionYear = data.find((d) => d.type === "projection")?.year;
 
@@ -78,6 +86,8 @@ export default function CompactRatioChart({ entity, slug, data, latestEstimate }
     }
     return null;
   };
+  if (!isVisible)
+    return null;
 
   return (
     <div className="relative">
@@ -104,7 +114,7 @@ export default function CompactRatioChart({ entity, slug, data, latestEstimate }
           <div className="h-24 pointer-events-none">
             {!isMounted ? (
               // Placeholder during SSR to prevent hydration mismatch
-              <div className="w-full h-full bg-gray-100 dark:bg-gray-800 rounded animate-pulse" />
+              <div className="w-full h-full bg-gray-100 dark:bg-gray-800 rounded animate-pulse" >Loading...</div>
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={chartData} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
@@ -221,4 +231,4 @@ export default function CompactRatioChart({ entity, slug, data, latestEstimate }
       )}
     </div>
   );
-}
+} 

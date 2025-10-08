@@ -1,5 +1,5 @@
-import { getAllCountries, entityToSlug } from "@/lib/owid";
-import CompactRatioChart from "@/components/CompactRatioChart";
+import { getAllCountries } from "@/lib/owid";
+import CountryGrid from "@/components/CountryGrid";
 import type { Metadata } from "next";
 
 export const revalidate = 86400; // daily
@@ -15,6 +15,7 @@ export const metadata: Metadata = {
 
 export default async function Home() {
   const countries = await getAllCountries();
+  console.log(`Rendering home with ${countries.length} countries`);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -62,17 +63,7 @@ export default async function Home() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        {countries.map((country) => (
-          <CompactRatioChart
-            key={country.entity}
-            entity={country.entity}
-            slug={entityToSlug(country.entity)}
-            data={country.series}
-            latestEstimate={country.latestEstimate}
-          />
-        ))}
-      </div>
+      <CountryGrid countries={countries} />
 
       <footer className="mt-12 pt-6 border-t opacity-70 text-sm">
         <p>
