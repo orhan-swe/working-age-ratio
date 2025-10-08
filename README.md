@@ -1,8 +1,7 @@
-```markdown
+# Badges
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/orhan-swe/working-age-ratio)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Next.js](https://img.shields.io/badge/Next.js-15-black)](https://nextjs.org/)
-```
 # Working Age Ratio
 
 A Next.js app that visualizes the "working-age to elderly" support ratio (people aged 15–64 per person aged 65+) across 100+ countries from 1950 to 2100. The project pulls estimates and UN medium-variant projections from Our World in Data and renders interactive charts so you can explore demographic pressure over time.
