@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Working Age Ratio
 
-## Getting Started
+A Next.js app that visualizes the "working-age to elderly" support ratio (people aged 15–64 per person aged 65+) across 100+ countries from 1950 to 2100. The project pulls estimates and UN medium-variant projections from Our World in Data and renders interactive charts so you can explore demographic pressure over time.
 
-First, run the development server:
+Key features
+
+- Grid view of compact country charts for quick comparison
+- Detail page per country with a full-size interactive chart (historical & projections)
+- Dark mode friendly charts and tooltips
+- File-based caching for the original OWID CSV to avoid Next.js fetch cache size limits
+- Search and region filters with shareable URL state
+- SEO-friendly metadata, sitemap and JSON-LD
+
+Data source
+
+This project uses the Our World in Data CSV derived from the UN World Population Prospects:
+
+- https://ourworldindata.org/grapher/population-young-working-elderly-with-projections.csv
+
+License: The underlying data is CC BY (Our World in Data / UN DESA). This repository code is provided under the license in this repository (check `LICENSE` if present).
+
+Caching notes
+
+The OWID CSV is ~2.3MB which exceeds Next.js' in-memory fetch cache limits. To work around this, the app implements a file-based cache using a small server-side cache file (local `.cache/owid-data.json` during development and `/tmp` on serverless platforms like Vercel) with a 24 hour TTL and React's `cache()` wrapper to deduplicate fetches.
+
+Development
+
+Install dependencies and run the dev server:
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 to view the app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Building for production
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm run start
+```
 
-## Learn More
+Deployment
 
-To learn more about Next.js, take a look at the following resources:
+This project is set up to deploy on Vercel. The file-based cache uses `/tmp` when running on serverless platforms; this keeps cached CSV data out of Next.js' in-memory cache and avoids the 2MB limit.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Contributing
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The project is open source. Contributions, issues and pull requests are welcome — see the repository at:
 
-## Deploy on Vercel
+https://github.com/orhan-swe/working-age-ratio
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+If you'd like help getting started, open an issue describing what you'd like to work on.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Contact
+
+- Repository: https://github.com/orhan-swe/working-age-ratio
+
+---
+
+This README replaces the default template with a short project overview, data and caching notes, development instructions, and contributing pointer.
