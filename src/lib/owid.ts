@@ -32,7 +32,6 @@ async function buildSlugMapping(): Promise<Record<string, string>> {
   if (DYNAMIC_SLUG_MAP) return DYNAMIC_SLUG_MAP;
   
   const allData = await getCachedData(OWID_CSV);
-  console.log(`Building slug mapping from ${allData.length} data rows`);
   const entities = [...new Set(allData.map(r => r.entity))];
   
   DYNAMIC_SLUG_MAP = {};

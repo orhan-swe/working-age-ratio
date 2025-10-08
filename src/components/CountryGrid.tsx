@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, Suspense } from "react";
 import CompactRatioChart from "./CompactRatioChart";
 import SearchAndFilter from "./SearchAndFilter";
 import { getRegion, type Region } from "@/lib/regions";
@@ -39,11 +39,22 @@ export default function CountryGrid({ countries }: Props) {
 
   return (
     <>
-      <SearchAndFilter
-        onFilterChange={handleFilterChange}
-        totalCount={countries.length}
-        filteredCount={filteredCountries.length}
-      />
+      <Suspense fallback={
+        <div className="mb-6 space-y-4">
+          <div className="h-10 bg-gray-100 dark:bg-gray-800 rounded-lg animate-pulse max-w-md" />
+          <div className="flex gap-2">
+            {[1,2,3,4,5,6,7].map(i => (
+              <div key={i} className="h-10 w-20 bg-gray-100 dark:bg-gray-800 rounded-lg animate-pulse" />
+            ))}
+          </div>
+        </div>
+      }>
+        <SearchAndFilter
+          onFilterChange={handleFilterChange}
+          totalCount={countries.length}
+          filteredCount={filteredCountries.length}
+        />
+      </Suspense>
 
       {filteredCountries.length === 0 ? (
         <div className="text-center py-12">

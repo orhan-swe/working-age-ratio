@@ -15,7 +15,6 @@ export const metadata: Metadata = {
 
 export default async function Home() {
   const countries = await getAllCountries();
-  console.log(`Rendering home with ${countries.length} countries`);
 
   const jsonLd = {
     "@context": "https://schema.org",
