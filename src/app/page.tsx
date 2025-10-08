@@ -1,103 +1,85 @@
-import Image from "next/image";
+import { getAllCountries, entityToSlug } from "@/lib/owid";
+import CompactRatioChart from "@/components/CompactRatioChart";
+import type { Metadata } from "next";
 
-export default function Home() {
+export const revalidate = 86400; // daily
+
+export const metadata: Metadata = {
+  title: "Global Working-Age to Elderly Ratio (1950-2100) | All Countries",
+  description: "Compare demographic support ratios across 100+ countries and regions. Interactive visualizations of working-age population (15-64) per elderly person (65+). Historical estimates (1950-2021) and UN projections to 2100.",
+  openGraph: {
+    title: "Global Demographic Support Ratios - All Countries",
+    description: "Compare working-age to elderly ratios across 100+ countries from 1950-2100",
+  },
+};
+
+export default async function Home() {
+  const countries = await getAllCountries();
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    "name": "Global Working-Age to Elderly Ratio (1950-2100)",
+    "description": "Demographic support ratios across 100+ countries showing working-age population (15-64) per elderly person (65+)",
+    "url": process.env.NEXT_PUBLIC_BASE_URL || "https://yourdomain.com",
+    "keywords": "demographic data, population aging, support ratio, dependency ratio, elderly population",
+    "creator": {
+      "@type": "Organization",
+      "name": "UN DESA"
+    },
+    "temporalCoverage": "1950/2100",
+    "spatialCoverage": {
+      "@type": "Place",
+      "name": "Global"
+    },
+    "distribution": {
+      "@type": "DataDownload",
+      "encodingFormat": "text/html",
+      "contentUrl": process.env.NEXT_PUBLIC_BASE_URL || "https://yourdomain.com"
+    }
+  };
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <main className="max-w-7xl mx-auto p-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold mb-3">
+          Global Working-Age to Elderly Ratio (1950–2100)
+        </h1>
+        <p className="text-base opacity-80 max-w-3xl">
+          Compare demographic support ratios across {countries.length} countries and regions. 
+          The ratio shows working-age population (15–64) per elderly person (65+). 
+          Lower ratios indicate greater demographic pressure. Click any chart to see details.
+        </p>
+        <p className="text-sm opacity-70 mt-2">
+          <span className="inline-block w-3 h-3 bg-red-200 dark:bg-red-900 mr-1"></span> Critical (&lt;2) 
+          <span className="inline-block w-3 h-3 bg-orange-200 dark:bg-orange-900 mr-1 ml-3"></span> High pressure (2-4) 
+          <span className="inline-block w-3 h-3 bg-yellow-200 dark:bg-yellow-900 mr-1 ml-3"></span> Moderate (4-6) 
+          <span className="inline-block w-3 h-3 bg-green-200 dark:bg-green-900 mr-1 ml-3"></span> Healthy (&gt;6)
+        </p>
+      </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        {countries.map((country) => (
+          <CompactRatioChart
+            key={country.entity}
+            entity={country.entity}
+            slug={entityToSlug(country.entity)}
+            data={country.series}
+            latestEstimate={country.latestEstimate}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+        ))}
+      </div>
+
+      <footer className="mt-12 pt-6 border-t opacity-70 text-sm">
+        <p>
+          Source: UN DESA – World Population Prospects 2024 via Our World in Data (CC BY).
+          Data includes historical estimates (~1950–2021) and medium-variant projections (2022–2100).
+        </p>
       </footer>
-    </div>
+    </main>
   );
 }
