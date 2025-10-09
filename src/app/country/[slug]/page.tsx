@@ -1,8 +1,9 @@
 // app/country/[slug]/page.tsx
-import { getCountrySeries, slugToEntity } from "@/lib/owid";
-import SupportRatioSVG from "@/components/SupportRatioSVG";
+import { getCountrySeries, slugToEntity, getAllCountries } from "@/lib/owid";
+import CountryComparisonChart from "@/components/CountryComparisonChart";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { entityToSlug } from "@/lib/utils";
 
 export const revalidate = 86400; // daily
 
@@ -48,6 +49,13 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
 
   const { series, latestEstimate } = data;
 
+  // Get all countries for the selector
+  const allCountriesData = await getAllCountries();
+  const allCountries = allCountriesData.map((c) => ({
+    entity: c.entity,
+    slug: entityToSlug(c.entity),
+  }));
+
   // Pick a few SEO-friendly table rows (you can tune the years)
   const pickYears = [1960, 1980, 2000, 2020, 2030, 2050, 2100];
   const lookup = new Map(series.map((p) => [p.year, p]));
@@ -73,9 +81,10 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
       </p>
 
       <div className="mt-4">
-        <SupportRatioSVG
+        <CountryComparisonChart
+          entity={data.entity}
           data={series}
-          title={`Working-age : Elderly in ${data.entity}`}
+          allCountries={allCountries}
         />
       </div>
 
