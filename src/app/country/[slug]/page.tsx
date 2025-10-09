@@ -97,8 +97,8 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         <h3>About this metric</h3>
         <p>
           This ratio is the inverse of the old-age dependency ratio (OADR). If OADR is
-          <em>elderly per 100 working-age</em>, then support ratio is
-          <em>working-age per elderly</em>. Both come from the same UN demographic series.
+          <em> elderly per 100 working-age</em>, then support ratio is
+          <em> working-age per elderly</em>. Both come from the same UN demographic series.
         </p>
         <p className="opacity-80">
           Source: UN DESA – World Population Prospects 2024 via Our World in Data (CC BY).
