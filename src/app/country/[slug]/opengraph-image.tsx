@@ -1,4 +1,5 @@
 import { ImageResponse } from 'next/og';
+import { SLUG_TO_ENTITY, entityToSlug } from '@/lib/utils';
 
 export const runtime = 'edge';
 export const alt = 'Country demographic support ratio';
@@ -14,17 +15,27 @@ async function getCountryData(slug: string) {
   const res = await fetch(URL, { next: { revalidate: 86400 } });
   const text = await res.text();
   
-  // Simple slug to entity mapping
-  const slugMap: Record<string, string> = {
-    "south-korea": "South Korea",
-    "united-states": "United States",
-    "united-kingdom": "United Kingdom",
-  };
+  // Build slug mapping from CSV data
+  const lines = text.split('\n').slice(1); // skip header
+  const entities = new Set<string>();
+  for (const line of lines) {
+    const [lineEntity] = line.split(',');
+    if (lineEntity) entities.add(lineEntity);
+  }
   
+  // Build reverse slug map
+  const slugMap: Record<string, string> = { ...SLUG_TO_ENTITY };
+  for (const entity of entities) {
+    const entitySlug = entityToSlug(entity);
+    if (!slugMap[entitySlug]) {
+      slugMap[entitySlug] = entity;
+    }
+  }
+  
+  // Get the entity name for this slug
   const entity = slugMap[slug] || slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
   
-  // Parse CSV and find country data
-  const lines = text.split('\n').slice(1); // skip header
+  // Parse CSV and find country data (reuse lines array)
   const points: { year: number; ratio: number }[] = [];
   
   for (const line of lines) {
