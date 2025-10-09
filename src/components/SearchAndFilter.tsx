@@ -63,8 +63,8 @@ export default function SearchAndFilter({ onFilterChange, totalCount, filteredCo
   return (
     <div className="mb-6 space-y-4">
       {/* Search Bar */}
-      <div className="flex gap-3 items-center">
-        <div className="flex-1 max-w-md relative">
+      <div className="flex gap-3 items-center flex-col sm:flex-row sm:items-center">
+        <div className="w-full sm:flex-1 sm:max-w-md relative">
           <input
             type="search"
             placeholder="Search countries..."

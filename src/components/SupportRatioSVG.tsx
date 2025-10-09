@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import type { RatioPoint } from "@/lib/owid";
 import {
   LineChart,
@@ -27,6 +27,8 @@ export default function SupportRatioSVG({
   data,
   title = "Working-age to Elderly Ratio",
 }: Props) {
+  const [useLogScale, setUseLogScale] = useState(true);
+  
   // Find the transition point between estimates and projections
   const firstProjectionYear = data.find((d) => d.type === "projection")?.year;
 
@@ -75,7 +77,15 @@ export default function SupportRatioSVG({
 
   return (
     <div className="w-full">
-      <h3 className="text-base font-semibold mb-3">{title}</h3>
+      <div className="flex justify-between items-center mb-3">
+        <h3 className="text-base font-semibold">{title + (useLogScale ? ' (Log Scale)' : ' (Linear Scale)')}</h3>
+        <button
+          onClick={() => setUseLogScale(!useLogScale)}
+          className="px-3 py-1.5 text-sm font-medium rounded-md bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors border border-gray-300 dark:border-gray-600"
+        >
+          {useLogScale ? '📊 Switch to Linear' : '📈 Switch to Log'} scale
+        </button>
+      </div>
       <ResponsiveContainer width="100%" height={height}>
         <LineChart
           data={chartData}
@@ -98,6 +108,8 @@ export default function SupportRatioSVG({
             }}
             tickFormatter={formatNumber}
             stroke="#888"
+            scale={useLogScale ? "log" : "linear"}
+            domain={useLogScale ? [1, 'auto'] : [0, 'auto']}
           />
           <Tooltip content={<CustomTooltip />} />
           <Legend
