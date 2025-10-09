@@ -109,8 +109,17 @@ async function getCountryData(slug: string) {
   };
 }
 
-export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
+export default async function Image({ 
+  params,
+  searchParams,
+}: { 
+  params: Promise<{ slug: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   const { slug } = await params;
+  // Accept any query params like ?v=1, ?refresh=true, etc. for cache busting
+  // We don't use them, but they help force browsers/crawlers to refetch
+  
   const data = await getCountryData(slug);
 
   if (!data) {
