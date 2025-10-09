@@ -6,9 +6,22 @@ import Link from "next/link";
 
 export const revalidate = 86400; // daily
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+export async function generateMetadata({ 
+  params,
+  searchParams,
+}: { 
+  params: Promise<{ slug: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   const { slug } = await params;
   const entity = await slugToEntity(slug);
+  
+  // Pass through cache-busting params (v, refresh, etc.) to OG image URL
+  const sp = searchParams ? await searchParams : {};
+  const queryString = sp.v || sp.refresh || sp.t 
+    ? `?${new URLSearchParams(Object.entries(sp).filter(([k, v]) => v && (k === 'v' || k === 'refresh' || k === 't')).map(([k, v]) => [k, String(v)])).toString()}`
+    : '';
+  
   return {
     title: `Working-age to Elderly Ratio – ${entity} (1950–2100)`,
     description: `Historical and projected support ratio for ${entity}: working-age population (15–64) relative to elderly (65+). Source: UN World Population Prospects 2024 via Our World in Data.`,
@@ -16,13 +29,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     openGraph: {
       title: `Support Ratio in ${entity}`,
       description: `Working-age : Elderly for ${entity}, 1950–2100.`,
-      images: [`/country/${slug}/opengraph-image`],
+      images: [`/country/${slug}/opengraph-image${queryString}`],
     },
     twitter: {
       card: 'summary_large_image',
       title: `Working-age to Elderly Ratio – ${entity}`,
       description: `Historical and projected support ratio for ${entity}, 1950–2100`,
-      images: [`/country/${slug}/opengraph-image`],
+      images: [`/country/${slug}/opengraph-image${queryString}`],
     },
   };
 }
